@@ -37,6 +37,14 @@ def draw_rect(x,y,x_1,y_1, char="X", fill=True):
 def clear_screen():
     print("\033[2J")
 
+def draw_1px_line(x,y, size, char="X", vertical=True):
+    """x,y: int, <char>: String de 1 char(X), <vertical>: Boolean (True)"""
+    if vertical:
+        for h in range(size):
+            draw_pixel(x+h,y, char)
+    else:
+        draw_pixel(x,y, string=char*size)
+
 ########
 # Main #
 ########
@@ -55,6 +63,8 @@ def main():
         draw_pixel(10,10,"X")
         draw_rect(10,10,20,20,":")
         draw_rect(25,25,33,33,fill=False)
+        draw_1px_line(7,2, 10, char="!", vertical=False)
+        draw_1px_line(9,7, 10, char="^")
 
 if __name__ == "__main__":
     main()
