@@ -53,18 +53,31 @@ def main():
     # Init
     ## Terminal size
     size = x_size, y_size = os.get_terminal_size()
+    map = """22222222
+20000002
+20000002
+20000002
+20000002
+20000002
+20000002
+22222222"""
+    ShowMap = False
 
     # Boucle infini
     while 1:
         ## Getkey as key
         key = getkey()
         print(key)
+        if key=="m":
+            ShowMap= not (ShowMap)
         clear_screen()
         draw_pixel(10,10,"X")
         draw_rect(10,10,20,20,":")
         draw_rect(25,25,33,33,fill=False)
         draw_1px_line(7,2, 10, char="!", vertical=False)
         draw_1px_line(9,7, 10, char="^")
+        if ShowMap:
+            print("\033[1;1H"+map)
 
 if __name__ == "__main__":
     main()
