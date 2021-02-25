@@ -6,3 +6,7 @@ __pycache__/
 # Personal test
 __tests__/
 *.py
+
+# Vscode
+.vscode/
+*
