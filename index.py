@@ -45,7 +45,7 @@ def draw_1px_line(x,y, size, char="X", vertical=True):
     else:
         draw_pixel(x,y, string=char*size)
 
-def show_map(map, size_x, size_y, size_map, pos="ru", border=True):
+def print_map(map_, size_x, size_y, size_map, tileset, pos="ru", border=True):
     """map: list of list of int, <pos>: [rl][ud] (ru), <border>: bool (True)"""
     if pos[0]=="r":
         y=size_x-size_map+1
@@ -55,22 +55,19 @@ def show_map(map, size_x, size_y, size_map, pos="ru", border=True):
         x=size_y-size_map
     else:
         x=1
-    print_map(x,y, map)
-
-def print_map(x,y, map):
-    """x,y: int, map: list of list of int"""
-    for h in range(len(map)):
+    for h in range(len(map_)):
         set_pos(x+h, y)
-        for h in map[h]:
-            print(h,end="")
+        for v in map_[h]:
+            print(tileset[v],end="")
         print()
+
 
 def set_pos(x,y, printing=True):
     """x,y: int, <printng>: Boolean (True)"""
     if printing:
-        print("\033[{0};{1}H".format(x,y), end="")
+        print(f"\033[{x};{y}H", end="")
     else:
-        return "\033[{0};{1}H".format(x,y)
+        return f"\033[{x};{y}H"
 
 
 ########
@@ -81,35 +78,32 @@ def main():
     # Init
     ## Terminal size
     size = x_size, y_size = os.get_terminal_size()
-    map = [    # 0: Vide, 1: Mur, 2: Bordure, 3: Player, 4: Undefind
-        [2,2,2,2,2,2,2,2],
-        [2,0,1,0,1,0,1,2],
-        [2,0,0,3,1,0,0,2],
-        [2,1,0,1,1,1,0,2],
-        [2,0,0,1,0,0,0,2],
-        [2,0,1,1,0,1,1,2],
-        [2,0,0,0,0,0,0,2],
-        [2,2,2,2,2,2,2,2]
+    player = player_x, player_y = 2.0, 2.0
+    map_ = [  # 0: Vide, 1: Mur
+            [1,1,1,1,1,1,1,1],
+            [1,0,1,0,1,0,1,1],
+            [1,0,0,0,1,0,0,1],
+            [1,1,0,1,1,1,0,1],
+            [1,0,0,1,0,0,0,1],
+            [1,0,1,1,0,1,1,1],
+            [1,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1]
     ]
     map_size = 8
     ShowMap = False
     key = "init"
-    clear_screen()
+    tileset = (" ", "█")
 
-    # Boucle infini
+    clear_screen()
+    # Boucle infinie
     while 1:
         ### Key Detection
         if key=="m":
             ShowMap= not (ShowMap)
         ## Show screen
-        draw_pixel(10,10,"X")
-        draw_rect(10,10,20,20,":")
-        draw_rect(25,25,33,33,fill=False)
-        draw_1px_line(7,2, 10, char="!", vertical=False)
-        draw_1px_line(9,7, 10, char="^")
 
         if ShowMap:
-            show_map(map, x_size, y_size, map_size, pos="ru")
+            print_map(map_, x_size, y_size, map_size, tileset=tileset,pos="ru")
         ## Getkey as key
         key = getkey()
         print(key)
