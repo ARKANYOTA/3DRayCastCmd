@@ -4,6 +4,8 @@
 import os
 from get import getkey as gk
 import math
+import numpy as np
+
 #############
 # Fonctions #
 #############
@@ -98,12 +100,61 @@ def get_ray_x_lenth(angle, map_, player_x, player_y):
         delta_x = 1-dec_x
     if 90 < angle < 180 or 270 < angle < 360:
         cosangle = 90 - (angle%90)
+    elif angle==90 or angle==270:
+        if angle==90:
+            return round(player_y % 1,4)    # division par 0 car cos(90)=0
+        if angle==270:
+            return round(1-(player_y % 1),4)    # division par 0 car cos(270)=0
     else:
         cosangle = (angle%90)
     
     longeur = delta_x/ math.cos(math.radians(cosangle))
-    print(f"player(x,y): ({player_x}, {player_y})||angle: {angle} ||delta_x: {round(delta_x,1)}")
-    return round(longeur,1)
+    return round(longeur,4)
+#   X 
+#   |\           |    return du longeur entre y(PlaYer) et le X
+#   | \          |
+#-- |--\---------------
+#   |   \        |
+#   |    \       |
+#   |     \      |
+#   |   Player   |
+#   |            |
+#-- |------------------
+def get_ray_y_lenth(angle, map_, player_x, player_y): # Pas ce fier a ce calcul: l'autre est meiux
+    # cos(ang) = adj/hyp
+    angle = angle % 360
+    dec_y = player_y % 1
+    if 90 < angle < 270:
+        delta_y = 1-dec_y
+    else:
+        delta_y = dec_y
+    if 0 < angle < 90 or 180 < angle < 270:
+        cosangle = 90 - (angle%90)
+    elif angle==180 or angle==0:
+        if angle==180:
+            return round(player_x % 1,4)    # division par 0 car cos(90)=0
+        if angle==0:
+            return round(1-(player_x % 1),4)    # division par 0 car cos(270)=0
+    else:
+        cosangle = (angle%90)
+    
+    longeur = delta_y/ math.cos(math.radians(cosangle))
+    return round(longeur,4)
+
+def nombre_de_lenth(angle, map_, player_x, player_y):
+    # tan(angle) = coef/1
+    # coef = tan(angle) * 1 = tan(angle)
+    nombre_de_block = 6
+    coef_directeur = math.tan(math.radians(angle))
+    return round(angle,4), round(coef_directeur, 4) ,nombre_de_block
+
+
+def afficher_les_longeur(x_size, y_size, map_, player_x, player_y, FOV, angle):
+    angle_d_un_pixel = FOV/x_size
+    # list_of_range_number = [k for k in range(int(angle), int(angle+FOV))]
+    # list_of_angles = [k*angle_d_un_pixel for k in list_of_range_number]
+    for x in np.arange(int(angle), int(angle+FOV), angle_d_un_pixel):
+        print(nombre_de_lenth(x, map_, player_x, player_y))
 
 ########
 # Main #
@@ -112,6 +163,7 @@ def main():
     """Main"""
     # Init
     ## Terminal size
+    FOV = 90
     size = x_size, y_size = os.get_terminal_size()
     player = player_x, player_y = 2.4, 2.7
     map_ = [  # 0: Vide, 1: Mur
@@ -136,12 +188,7 @@ def main():
         if key=="m":
             ShowMap= not (ShowMap)
         ## Show screen
-        print(get_ray_x_lenth(180, map_, player_x, player_y))
-        print(get_ray_x_lenth(300, map_, player_x, player_y))
-        print(get_ray_x_lenth(90, map_, player_x, player_y))
-        print(get_ray_x_lenth(10, map_, player_x, player_y))
-        print(get_ray_x_lenth(30, map_, player_x, player_y))
-
+        afficher_les_longeur(x_size, y_size, map_, player_x, player_y, FOV, 0)
         if ShowMap:
             print_map(map_, x_size, y_size, map_size, tileset=tileset,pos="ru")
         ## Getkey as key
