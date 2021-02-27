@@ -3,7 +3,7 @@
 ###############
 import os
 from get import getkey as gk
-
+import math
 #############
 # Fonctions #
 #############
@@ -70,6 +70,41 @@ def set_pos(x,y, printing=True):
         return f"\033[{x};{y}H"
 
 
+def get_ray_lenth(angle, map_, player_x, player_y):
+    """angle: int en radient, map_: ..., player_x et player_y: float"""
+    dec_x = player_x % 1
+    dec_y = player_y % 1
+    if 90 < angle < 270:
+        delta_x = dec_x 
+    else:
+        delta_x = 1-dec_x 
+    if 0 <= angle < 180:
+        delta_y = dec_y 
+    else:
+        delta_y = 1-dec_y
+    tang = delta_y/delta_x
+    longeur = 2
+    print(f"player(x,y): ({player_x}, {player_y})||angle: {angle} ||delta_x: {delta_x}||delta_y: {delta_y}")
+    return longeur
+
+def get_ray_x_lenth(angle, map_, player_x, player_y):
+    # cos(ang) = adj/hyp
+    # hyp = adj/cos(ang)
+    angle = angle % 360
+    dec_x = player_x % 1
+    if 90 < angle < 270:
+        delta_x = dec_x 
+    else:
+        delta_x = 1-dec_x
+    if 90 < angle < 180 or 270 < angle < 360:
+        cosangle = 90 - (angle%90)
+    else:
+        cosangle = (angle%90)
+    
+    longeur = delta_x/ math.cos(math.radians(cosangle))
+    print(f"player(x,y): ({player_x}, {player_y})||angle: {angle} ||delta_x: {round(delta_x,1)}")
+    return round(longeur,1)
+
 ########
 # Main #
 ########
@@ -78,7 +113,7 @@ def main():
     # Init
     ## Terminal size
     size = x_size, y_size = os.get_terminal_size()
-    player = player_x, player_y = 2.0, 2.0
+    player = player_x, player_y = 2.4, 2.7
     map_ = [  # 0: Vide, 1: Mur
             [1,1,1,1,1,1,1,1],
             [1,0,1,0,1,0,1,1],
@@ -101,6 +136,11 @@ def main():
         if key=="m":
             ShowMap= not (ShowMap)
         ## Show screen
+        print(get_ray_x_lenth(180, map_, player_x, player_y))
+        print(get_ray_x_lenth(300, map_, player_x, player_y))
+        print(get_ray_x_lenth(90, map_, player_x, player_y))
+        print(get_ray_x_lenth(10, map_, player_x, player_y))
+        print(get_ray_x_lenth(30, map_, player_x, player_y))
 
         if ShowMap:
             print_map(map_, x_size, y_size, map_size, tileset=tileset,pos="ru")
